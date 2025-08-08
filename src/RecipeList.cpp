@@ -2,7 +2,7 @@
 #include <iostream>
 #include <stdexcept>
 
-RecipeList::RecipeList() : head(nullptr),tail(nullptr) {}
+RecipeList::RecipeList() : head(nullptr),tail(nullptr),size(0) {}
 
 RecipeList::~RecipeList(){
     clear();
@@ -28,7 +28,12 @@ void RecipeList::append(const Recipe &input){
 void RecipeList::print() const{
     Node *tmp = head;
     while(tmp != nullptr){
-        std::cout<<tmp->data.title<<std::endl;
+        if (tmp->next!=nullptr) {
+            std::cout<<tmp->data.title+",";
+        }
+        else {
+            std::cout<<tmp->data.title<<std::endl;
+        }
         tmp = tmp->next;
     }
 }
@@ -99,14 +104,14 @@ Recipe RecipeList::removeIndex(const int &index) {
     return tmpRecipe;
 }
 
-void RecipeList::insert(const int &index, const Recipe &input) {
-    if (index < 0 || index >= size) {
+void RecipeList::insert(const Recipe &input, const int &index) {
+    if (index < 0 || index > size) {
         throw std::out_of_range("Index out of range");
     }
-    if (index - 1 == this->size) { //at end of list can just append
+    if (index == this->size) { //at end of list can just append
         this->append(input);
     }
-    if (index == 0) {
+    else if (index == 0) {
         Node *newNode = new Node;
         newNode->data = input;
         newNode->next = this->head;
@@ -114,27 +119,34 @@ void RecipeList::insert(const int &index, const Recipe &input) {
         this->head = newNode;
         ++this->size;
     }
-    Node *tmp = nullptr;
-    if((this->size / 2) < index){ //the index is past the halfway point, start at back and go backwards
-        tmp = tail;
-        for(int i = this->size - 1; i > index; --i){
-            tmp = tmp->prev;
+    else {
+        Node *tmp = nullptr;
+        if((this->size / 2) < index){ //the index is past the halfway point, start at back and go backwards
+            tmp = tail;
+            for(int i = this->size - 1; i > index; --i){
+                tmp = tmp->prev;
+            }
         }
-    }
-    else{ //start and beginning and go forwards
-        tmp = head;
-        for(int i = 0; i < index; ++i){
-            tmp = tmp->next;
+        else{ //start and beginning and go forwards
+            tmp = head;
+            for(int i = 0; i < index; ++i){
+                tmp = tmp->next;
+            }
         }
-    }
 
-    Node *newNode = new Node;
-    newNode->data = input;
-    //tie in new node
-    tmp->prev->next = newNode;
-    newNode->prev = tmp->prev;
-    tmp->prev = newNode;
-    newNode->next = tmp;
-    ++this->size;
+        Node *newNode = new Node;
+        newNode->data = input;
+        //tie in new node
+        tmp->prev->next = newNode;
+        newNode->prev = tmp->prev;
+        tmp->prev = newNode;
+        newNode->next = tmp;
+        ++this->size;
+    }
 }
+
+bool RecipeList::isEmpty() const {
+    return this->size == 0;
+}
+
 

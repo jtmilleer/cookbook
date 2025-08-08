@@ -16,7 +16,9 @@ class RecipeList{
         int getSize() const;
         Recipe getIndex(const int &index) const;
         Recipe removeIndex(const int &index);
-        void insert(const int &index, const Recipe &input);
+        void insert(const Recipe &input, const int &index );
+        bool isEmpty() const;
+
 
 
 };
