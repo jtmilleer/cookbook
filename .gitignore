@@ -3,3 +3,7 @@ src/out/
 src/CMakeLists.txt
 
 src/CMakePresets.json
+
+cmake-build-debug
+
+.idea
