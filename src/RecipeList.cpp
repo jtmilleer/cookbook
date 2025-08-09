@@ -25,18 +25,18 @@ void RecipeList::append(const Recipe &input){
     }
 }
 
-void RecipeList::print() const{
-    Node *tmp = head;
-    while(tmp != nullptr){
-        if (tmp->next!=nullptr) {
-            std::cout<<tmp->data.title+",";
+    void RecipeList::print() const{
+        Node *tmp = head;
+        while(tmp != nullptr){
+            if (tmp->next!=nullptr) {
+                std::cout<<tmp->data.title+",";
+            }
+            else {
+                std::cout<<tmp->data.title<<std::endl;
+            }
+            tmp = tmp->next;
         }
-        else {
-            std::cout<<tmp->data.title<<std::endl;
-        }
-        tmp = tmp->next;
     }
-}
 
 void RecipeList::clear() {
     Node *tmp = this->head;
@@ -78,6 +78,30 @@ Recipe RecipeList::getIndex(const int &index) const{
 Recipe RecipeList::removeIndex(const int &index) {
     if (index < 0 || index >= size) {
         throw std::out_of_range("Index out of range");
+    }
+    if (index == 0) { //removing beginning of list
+        Node *tmp = this->head;
+        Recipe tmpRecipe = tmp->data;
+        this->head = this->head->next;
+
+        delete tmp;
+        --this->size;
+        if (this->size == 0) {
+            this->tail = nullptr;
+        }
+        else {
+            this->head->prev = nullptr;
+        }
+        return tmpRecipe;
+    }
+    if (index == this->size - 1) { //removing end of list
+        Node *tmp = this->tail;
+        Recipe tmpRecipe = tmp->data;
+        this->tail = this->tail->prev;
+        this->tail->next = nullptr;
+        delete tmp;
+        --this->size;
+        return tmpRecipe;
     }
     Node *tmp = nullptr;
     if((this->size / 2) < index){ //the index is past the halfway point, start at back and go backwards
