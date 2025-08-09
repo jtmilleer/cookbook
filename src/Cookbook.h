@@ -5,7 +5,7 @@
 #ifndef COOKBOOK_H
 #define COOKBOOK_H
 
-#include <unordered_map>
+#include <map>
 #include "RecipeList.h"
 #include "Recipe.h"
 #include <string>
@@ -20,15 +20,25 @@ public:
 
     Recipe getRecipe(const std::string &recipe) const;
 
-    RecipeList getLetter(const char &letter) const;
+    const RecipeList &getLetter(const char &letter) const;
 
-    void removeRecipe(const std::string &recipe);
+    void removeRecipe(const std::string &inputRecipe);
+
+    int getRecipeCount() const;
+
+    void print() const;
+
+    // tags for Recipes
+
+
 
 
 
 private:
     int size;
-    std::unordered_map<char,RecipeList> cookbook;
+    std::map<char,RecipeList> cookbook;
+
+    const int ALPHA_LIMIT = 30;
 };
 
 
