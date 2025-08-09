@@ -8,9 +8,9 @@
 
 Cookbook::Cookbook() {
     size = 0;
-    for (char letter = 'A'; letter <= 'Z'; ++letter) {
-        cookbook[letter] = RecipeList();
-    }
+    //for (char letter = 'A'; letter <= 'Z'; ++letter) {
+       // cookbook[letter] = RecipeList();
+    //}
 }
 
 void Cookbook::addRecipe(const Recipe &recipe) {
@@ -68,7 +68,9 @@ int Cookbook::getRecipeCount() const {
 }
 
 void Cookbook::print() const {
-    for (const std::pair<char, RecipeList>& pair :cookbook) {
+    //this line was casuing segfault, std::map<char,RecipeList> internally stores the chars as const char?
+    //so this was copying and causing a deletion of already freed memory
+    for (const std::pair<const char, RecipeList>& pair :this->cookbook) {
         if (!pair.second.isEmpty()) {
             std::cout<<pair.first<<" ";
             pair.second.print();
