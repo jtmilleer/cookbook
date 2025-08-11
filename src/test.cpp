@@ -14,12 +14,13 @@ void RecipeListTest();
 
 void RecipeListTestSize1();
 
-
 Cookbook loadTestRecipies();
+
+void menu();
 
 int main() {
 
-    CookbookTest();
+    menu();
 
     return 0;
 }
@@ -119,4 +120,36 @@ Cookbook loadTestRecipies() {
     cookbook.addRecipe(new Recipe("pie"));
 
     return cookbook;
+}
+
+void menu() {
+
+    Cookbook testBook = loadTestRecipies();
+    std::cout<<"Enter 1 to list the cookbook,\n"
+               "Enter 2 to add a recipe\n"
+               "Enter 3 to exit"<<std::endl;
+    int input = 0;
+    while (input != 3) {
+        std::cout<<"Input: "<<std::endl;
+        std::cin>>input;
+        if (input == 1) {
+            testBook.print();
+        }
+        if (input == 2) {
+            std::cout<<"Enter a recipe name to add: ";
+            std::string recipeInput = "";
+            std::cin>>recipeInput;
+            testBook.addRecipe(new Recipe(recipeInput));
+        }
+        if (input == 3) {
+            std::cout<<"Exiting"<<std::endl;
+        }
+        else {
+            std::cout<<"Not a valid input"<<std::endl;
+        }
+
+
+
+
+    }
 }
