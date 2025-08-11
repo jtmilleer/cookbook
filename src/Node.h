@@ -4,9 +4,10 @@
 #include "Recipe.h"
 
 struct Node{
-    Recipe data;
+    const Recipe *data;
     Node *next = nullptr;
     Node *prev = nullptr;
+
 };
 
 #endif 

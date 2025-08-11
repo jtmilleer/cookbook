@@ -13,9 +13,9 @@ Cookbook::Cookbook() {
     //}
 }
 
-void Cookbook::addRecipe(const Recipe &recipe) {
-    if (!recipe.title.empty()) {
-        const char firstLetter = std::toupper(recipe.title[0]);
+void Cookbook::addRecipe(const Recipe *recipe) {
+    if (!recipe->title.empty()) {
+        const char firstLetter = std::toupper(recipe->title[0]);
         if (cookbook[firstLetter].getSize() >= ALPHA_LIMIT) {
             std::cout<<"Letter at it's limit, please remove a recipe"<<std::endl;
         }
@@ -30,19 +30,19 @@ void Cookbook::addRecipe(const Recipe &recipe) {
     }
 }
 
-Recipe Cookbook::getRecipe(const std::string &inputRecipe) const {
+const Recipe* Cookbook::getRecipe(const std::string &inputRecipe) const {
     const char firstLetter = std::toupper(inputRecipe[0]);
     const RecipeList &letterList = cookbook.at(firstLetter);
     for (int i = 0; i < letterList.getSize(); ++i) {
-        if (letterList.getIndex(i).title == inputRecipe) {
+        if (letterList.getIndex(i)->title == inputRecipe) {
             return letterList.getIndex(i);
         }
     }
     throw std::runtime_error("Recipe not found");
 }
 
-const RecipeList &Cookbook::getLetter(const char &letter) const {
-    return cookbook.at(std::toupper(letter));
+const RecipeList *Cookbook::getLetter(const char &letter) const {
+    return &cookbook.at(std::toupper(letter));
 }
 
 void Cookbook::removeRecipe(const std::string &inputRecipe) {
@@ -51,7 +51,7 @@ void Cookbook::removeRecipe(const std::string &inputRecipe) {
     int removalCount = 0;
     int i = 0;
     while (i < letterList.getSize()) {
-        const std::string title = letterList.getIndex(i).title;
+        const std::string title = letterList.getIndex(i)->title;
         if (title == inputRecipe) {
             letterList.removeIndex(i);
             ++removalCount;
@@ -72,7 +72,7 @@ void Cookbook::print() const {
     //so this was copying and causing a deletion of already freed memory
     for (const std::pair<const char, RecipeList>& pair :this->cookbook) {
         if (!pair.second.isEmpty()) {
-            std::cout<<pair.first<<" ";
+            std::cout<<pair.first<<": ";
             pair.second.print();
         }
 

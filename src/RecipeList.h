@@ -13,13 +13,13 @@ public:
     RecipeList();
     ~RecipeList();
 
-    void append(const Recipe  &input);
+    void append(const Recipe *input);
     void print() const;
     void clear();
     int getSize() const;
-    Recipe getIndex(const int &index) const;
-    Recipe removeIndex(const int &index);
-    void insert(const Recipe &input, const int &index );
+    const Recipe *getIndex(const int &index) const;
+    const Recipe *removeIndex(const int &index);
+    void insert(const Recipe *input, const int &index );
     bool isEmpty() const;
 
 

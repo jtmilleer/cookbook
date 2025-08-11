@@ -8,7 +8,7 @@ RecipeList::~RecipeList(){
     clear();
 }
 
-void RecipeList::append(const Recipe &input){
+void RecipeList::append(const Recipe *input){
     
     Node *tmp = new Node;
     tmp->data = input;
@@ -29,10 +29,10 @@ void RecipeList::append(const Recipe &input){
         Node *tmp = head;
         while(tmp != nullptr){
             if (tmp->next!=nullptr) {
-                std::cout<<tmp->data.title+",";
+                std::cout<<tmp->data->title+",";
             }
             else {
-                std::cout<<tmp->data.title<<std::endl;
+                std::cout<<tmp->data->title<<std::endl;
             }
             tmp = tmp->next;
         }
@@ -42,6 +42,9 @@ void RecipeList::clear() {
     Node *tmp = this->head;
     while(tmp != nullptr){
         Node *next = tmp->next;
+        tmp->next = nullptr;
+        tmp->prev = nullptr;
+        delete tmp->data;
         delete tmp;
         tmp = next;
     }
@@ -55,7 +58,7 @@ int RecipeList::getSize() const{
     return this->size;
 }
 
-Recipe RecipeList::getIndex(const int &index) const{
+const Recipe* RecipeList::getIndex(const int &index) const{
     if (index < 0 || index >= size) {
         throw std::out_of_range("Index out of range");
     }
@@ -75,13 +78,13 @@ Recipe RecipeList::getIndex(const int &index) const{
     return tmp->data;
 }
 
-Recipe RecipeList::removeIndex(const int &index) {
+const Recipe* RecipeList::removeIndex(const int &index) {
     if (index < 0 || index >= size) {
         throw std::out_of_range("Index out of range");
     }
     if (index == 0) { //removing beginning of list
         Node *tmp = this->head;
-        Recipe tmpRecipe = tmp->data;
+        const Recipe *tmpRecipe = tmp->data;
         this->head = this->head->next;
 
         delete tmp;
@@ -96,7 +99,7 @@ Recipe RecipeList::removeIndex(const int &index) {
     }
     if (index == this->size - 1) { //removing end of list
         Node *tmp = this->tail;
-        Recipe tmpRecipe = tmp->data;
+        const Recipe *tmpRecipe = tmp->data;
         this->tail = this->tail->prev;
         this->tail->next = nullptr;
         delete tmp;
@@ -122,13 +125,13 @@ Recipe RecipeList::removeIndex(const int &index) {
     tmp->prev->next = tmp->next;
     tmp->next = nullptr;
     tmp->prev = nullptr;
-    Recipe tmpRecipe = tmp->data;
+    const Recipe *tmpRecipe = tmp->data;
     delete tmp;
     --this->size;
     return tmpRecipe;
 }
 
-void RecipeList::insert(const Recipe &input, const int &index) {
+void RecipeList::insert(const Recipe *input, const int &index) {
     if (index < 0 || index > size) {
         throw std::out_of_range("Index out of range");
     }
