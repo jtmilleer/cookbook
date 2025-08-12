@@ -45,6 +45,26 @@ const RecipeList *Cookbook::getLetter(const char &letter) const {
     return &cookbook.at(std::toupper(letter));
 }
 
+void Cookbook::editLetter(const char &letter) {
+    RecipeList letterList;
+    try {
+        letterList = this->cookbook.at(std::toupper(letter));
+    }
+    catch (const std::out_of_range &e){
+        std::cout<<"Letter not found in cookbook"<<std::endl;
+        return;
+    }
+    std::cout<<"Trying to edit list "<<&letterList<<" with size "<<letterList.getSize()<<" letter: "<<letter<<std::endl;
+    letterList.print();
+    std::cout<<"Enter what recipe you would like to remove"<<std::endl;
+    std::string input;
+    std::cin.ignore();
+    std::getline(std::cin,input);
+    letterList.removeRecipeStr(input);
+
+}
+
+
 void Cookbook::removeRecipe(const std::string &inputRecipe) {
     const char firstLetter = std::toupper(inputRecipe[0]);
     RecipeList &letterList = cookbook.at(firstLetter);
@@ -72,6 +92,7 @@ void Cookbook::print() const {
     //so this was copying and causing a deletion of already freed memory
     for (const std::pair<const char, RecipeList>& pair :this->cookbook) {
         if (!pair.second.isEmpty()) {
+            //std::cout<<"Printing "<<&pair.second<<std::endl;
             std::cout<<pair.first<<": ";
             pair.second.print();
         }

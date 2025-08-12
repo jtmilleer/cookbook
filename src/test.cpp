@@ -7,6 +7,7 @@
 #include "RecipeList.h"
 #include <cassert>
 #include <iostream>
+#include <limits>
 
 void CookbookTest();
 
@@ -118,38 +119,59 @@ Cookbook loadTestRecipies() {
     cookbook.addRecipe(new Recipe("omelette"));
     cookbook.addRecipe(new Recipe("cake"));
     cookbook.addRecipe(new Recipe("pie"));
+    cookbook.addRecipe(new Recipe("Junebug"));
+    cookbook.addRecipe(new Recipe("Cosmo"));
 
     return cookbook;
 }
 
 void menu() {
-
     Cookbook testBook = loadTestRecipies();
-    std::cout<<"Enter 1 to list the cookbook,\n"
-               "Enter 2 to add a recipe\n"
-               "Enter 3 to exit"<<std::endl;
     int input = 0;
-    while (input != 3) {
-        std::cout<<"Input: "<<std::endl;
-        std::cin>>input;
+    while (true) {
+        std::cout <<"\nEnter 1 to list the cookbook,\n"
+                    "Enter 2 to add a recipe\n"
+                    "Enter 3 to edit a letter\n"
+                    "Enter 4 to exit\n"
+                    "Input: ";
+
+        if (!(std::cin >> input)) { //non int val
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout <<"Invalid input. Please enter a number.\n";
+            continue;
+        }
+
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
         if (input == 1) {
             testBook.print();
+            std::cout <<"\nPress Enter to return to the menu...";
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-        if (input == 2) {
-            std::cout<<"Enter a recipe name to add: ";
-            std::string recipeInput = "";
-            std::cin>>recipeInput;
-            testBook.addRecipe(new Recipe(recipeInput));
+        else if (input == 2) {
+            std::cout << "Enter a recipe name to add: ";
+            std::string recipeInput;
+            std::getline(std::cin, recipeInput);
+            if (!recipeInput.empty()) {
+                testBook.addRecipe(new Recipe(recipeInput));
+                std::cout <<"Recipe added.\n";
+            } else {
+                std::cout <<"Recipe name cannot be empty.\n";
+            }
         }
-        if (input == 3) {
-            std::cout<<"Exiting"<<std::endl;
+        else if (input == 3) {
+            std::cout<<"Enter a character to edit"<<std::endl;
+            char input;
+            std::cin>>input;
+            testBook.editLetter(input);
+        }
+        else if (input == 4) {
+            std::cout <<"Exiting...\n";
+            break;
         }
         else {
-            std::cout<<"Not a valid input"<<std::endl;
+            std::cout <<"Not a valid option.\n";
         }
-
-
-
-
     }
 }

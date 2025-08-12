@@ -10,4 +10,23 @@ add_executable(cookbook
         src/Recipe.h
         src/RecipeList.cpp
         src/RecipeList.h
-        src/test.cpp)
+        src/t.cpp
+        src/cookbook.cpp
+        src/Cookbook.h
+        src/test.cpp
+)
+
+if (WIN32)
+    # Windows - PDCurses
+    include_directories("C:/Users/jtmil/PDCurses-master")
+    link_directories("C:/Users/jtmil/PDCurses-master/wincon")
+    set(CURSES_LIB pdcurses)
+else()
+    # Linux/Unix - ncurses
+    find_package(Curses REQUIRED)
+    include_directories(${CURSES_INCLUDE_DIR})
+    set(CURSES_LIB ${CURSES_LIBRARIES})
+endif()
+
+#add_executable(CrossPlatformTUI main.cpp)
+#target_link_libraries(CrossPlatformTUI ${CURSES_LIB})

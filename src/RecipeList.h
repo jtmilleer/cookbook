@@ -19,6 +19,7 @@ public:
     int getSize() const;
     const Recipe *getIndex(const int &index) const;
     const Recipe *removeIndex(const int &index);
+    void removeRecipeStr(const std::string &input);
     void insert(const Recipe *input, const int &index );
     bool isEmpty() const;
 

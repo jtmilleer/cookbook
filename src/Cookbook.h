@@ -22,6 +22,8 @@ public:
 
     const RecipeList *getLetter(const char &letter) const;
 
+    void editLetter(const char &letter);
+
     void removeRecipe(const std::string &inputRecipe);
 
     int getRecipeCount() const;
