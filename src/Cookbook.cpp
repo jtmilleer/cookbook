@@ -5,7 +5,7 @@
 #include "Cookbook.h"
 #include <cctype>
 #include <iostream>
-
+#include <curses.h>
 Cookbook::Cookbook() {
     size = 0;
     //for (char letter = 'A'; letter <= 'Z'; ++letter) {
@@ -98,5 +98,55 @@ void Cookbook::print() const {
         }
 
     }
+}
+
+void Cookbook::viewCookbookCursor() const {
+    clear(); // wipe the screen
+
+    int row = 0;
+
+    // print the cookbook contents
+    for (const std::pair<const char, RecipeList>& pair : this->cookbook) {
+        if (!pair.second.isEmpty()) {
+            move(row++, 0);
+            clrtoeol();
+            printw("%c: ", pair.first);
+
+            for (int i = 0; i < pair.second.getSize(); i++) {
+                printw("%s ", pair.second.getIndex(i)->title.c_str());
+            }
+            row++;
+        }
+    }
+
+    // print a separator and instructions
+    move(row++, 0);
+    printw("--------------------------------------------------");
+    move(row++, 0);
+    printw("Press ENTER to return to menu...");
+
+    refresh();
+
+    // wait for Enter key
+    int ch;
+    while ((ch = getch()) != '\n') {
+        // do nothing until enter is pressed
+    }
+
+    clear();    // wipe cookbook screen
+    refresh();  // make sure it's blank before menu is drawn again
+}
+
+void Cookbook::editLetterCursor() {
+    clear(); //wipe screen
+
+    printw("What letter would you like to edit?");
+
+    const int ch = toupper(getch());
+
+    
+    RecipeList *letterList = &this->cookbook.at(ch);
 
 }
+
+

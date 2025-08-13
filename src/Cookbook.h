@@ -30,6 +30,10 @@ public:
 
     void print() const;
 
+    void viewCookbookCursor() const;
+
+    void editLetterCursor();
+
     // tags for Recipes
 
 
