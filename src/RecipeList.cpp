@@ -27,11 +27,11 @@ void RecipeList::append(const Recipe *input){
 
     void RecipeList::print() const{
         const Node *tmp = head;
-        std::cout<<"Head: "<<tmp<<" Data: "<<tmp->data<<std::endl;
+        std::cout<<"Head: "<<tmp<<" Data: "<<tmp->data->title<<std::endl;
         while(tmp != nullptr){
             //std::cout<<"Printing "<<tmp<<std::endl;
             if (tmp->next!=nullptr) {
-                std::cout<<"Hi from list print inside last checker"<<std::endl;
+                //std::cout<<"Hi from list print inside last checker"<<std::endl;
                 std::cout<<tmp->data->title+",";
             }
             else {
@@ -137,17 +137,37 @@ const Recipe* RecipeList::removeIndex(const int &index) {
 void RecipeList::removeRecipeStr(const std::string &input) {
     Node *tmp = this->head;
     Node *prev = nullptr;
+    int i = 0;
     while (tmp != nullptr && tmp->data->title != input) {
         prev = tmp;
         tmp = tmp->next;
+        ++i;
     }
     if (tmp == nullptr) {
         std::cout << "Recipe not found.\n";
         return;
     }
-    std::cout<<"Trying to remove node "<<tmp<<" with val "<<tmp->data->title<<std::endl;
+    //std::cout<<"Trying to remove node "<<tmp<<" with val "<<tmp->data->title<<std::endl;
+    std::cout<<this->getIndex(i)->title<<std::endl;
+    this->removeIndex(i);
+    //case if list becomes empty
+    /*
+    if (this->size == 1) {
+        delete tmp->data;
+        delete tmp;
+        this->size == 0;
+        return;
+    }
+
+    if (tmp == this->head) {
+        this->head == this->head->next;
+    }
+    if (tmp == this->tail) {
+        this->tail = this->tail->prev;
+    }
 
     //This causes a bad_alloc, doesn't remove head right
+
     if (prev == nullptr) {
         this->head = tmp->next;
     } else {
@@ -158,9 +178,12 @@ void RecipeList::removeRecipeStr(const std::string &input) {
         this->tail = prev;
     }
 
+    prev->next =
+
     delete tmp->data;
     delete tmp;
     --this->size;
+    */
 
 }
 

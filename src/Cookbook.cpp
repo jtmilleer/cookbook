@@ -46,21 +46,21 @@ const RecipeList *Cookbook::getLetter(const char &letter) const {
 }
 
 void Cookbook::editLetter(const char &letter) {
-    RecipeList letterList;
+    RecipeList *letterList;
     try {
-        letterList = this->cookbook.at(std::toupper(letter));
+        letterList = &this->cookbook.at(std::toupper(letter));
     }
     catch (const std::out_of_range &e){
         std::cout<<"Letter not found in cookbook"<<std::endl;
         return;
     }
-    std::cout<<"Trying to edit list "<<&letterList<<" with size "<<letterList.getSize()<<" letter: "<<letter<<std::endl;
-    letterList.print();
+    std::cout<<"Trying to edit list "<<&letterList<<" with size "<<letterList->getSize()<<" letter: "<<letter<<std::endl;
+    letterList->print();
     std::cout<<"Enter what recipe you would like to remove"<<std::endl;
     std::string input;
     std::cin.ignore();
     std::getline(std::cin,input);
-    letterList.removeRecipeStr(input);
+    letterList->removeRecipeStr(input);
 
 }
 
