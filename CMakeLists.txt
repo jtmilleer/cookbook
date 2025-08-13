@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.31)
 project(cookbook)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 include_directories(src)
 
@@ -18,15 +18,12 @@ add_executable(cookbook
 
 if (WIN32)
     # Windows - PDCurses
-    include_directories("C:/Users/jtmil/PDCurses-master")
-    link_directories("C:/Users/jtmil/PDCurses-master/wincon")
-    set(CURSES_LIB pdcurses)
+    include_directories("C:/Users/jtmil/PDCurses-master")  # points to root where curses.h is
+    # Link directly to the static library file instead of using -lpdcurses
+    target_link_libraries(cookbook "C:/Users/jtmil/PDCurses-master/wincon/pdcurses.a")
 else()
     # Linux/Unix - ncurses
     find_package(Curses REQUIRED)
     include_directories(${CURSES_INCLUDE_DIR})
-    set(CURSES_LIB ${CURSES_LIBRARIES})
+    target_link_libraries(cookbook ${CURSES_LIBRARIES})
 endif()
-
-#add_executable(CrossPlatformTUI main.cpp)
-#target_link_libraries(CrossPlatformTUI ${CURSES_LIB})

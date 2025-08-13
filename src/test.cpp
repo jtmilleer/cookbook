@@ -2,12 +2,15 @@
 // Created by jtmil on 8/9/2025.
 //
 
+
 #include "Cookbook.h"
 #include "Recipe.h"
 #include "RecipeList.h"
 #include <cassert>
 #include <iostream>
 #include <limits>
+#include <curses.h>
+
 
 void CookbookTest();
 
@@ -20,6 +23,8 @@ void RecipeListTest2();
 void B_EditTest();
 
 Cookbook *loadTestRecipies();
+
+void menuTest();
 
 void menu();
 
@@ -139,7 +144,7 @@ Cookbook *loadTestRecipies() {
     return cookbook;
 }
 
-void menu() {
+void menuTest() {
     Cookbook *testBook = loadTestRecipies();
     int input = 0;
     while (true) {
@@ -189,4 +194,34 @@ void menu() {
             std::cout <<"Not a valid option.\n";
         }
     }
+}
+
+void menu() {
+    
+    initscr();
+    printw("Welcome to my cookbook!");
+    move(1,0);
+    printw("1. List Cookbook");
+    move(2,0);
+    printw("2. Add a Recipe");
+    move(3,0);
+    printw("3. Edit a Letter");
+    move(4,0);
+    printw("4. Exit");
+    refresh();
+
+    int ch;
+    move(5,0);
+    while ((ch = getch()) != '4') {
+        move(5,0);
+        clrtoeol();
+        if (ch == '1') printw("You pressed 1 to list");
+        else if (ch == '2') printw("You pressed 2 to insert");
+        else if (ch == '3') printw("You pressed 3 to edit");
+        else printw("You pressed something else!");
+        refresh();
+    }
+
+
+    endwin();
 }
