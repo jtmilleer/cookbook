@@ -15,7 +15,11 @@ void RecipeListTest();
 
 void RecipeListTestSize1();
 
-Cookbook loadTestRecipies();
+void RecipeListTest2();
+
+void B_EditTest();
+
+Cookbook *loadTestRecipies();
 
 void menu();
 
@@ -40,6 +44,7 @@ void CookbookTest() {
     cookbook.addRecipe(meatball);
     cookbook.addRecipe(muffin);
     cookbook.addRecipe(junebug);
+
 
     cookbook.print();
 
@@ -97,36 +102,45 @@ void RecipeListTestSize1() {
     list.print();
 }
 
-Cookbook loadTestRecipies() {
-    Cookbook cookbook;
+void RecipeListTest2() {
+    RecipeList list;
+    list.append(new Recipe("carrot"));
+    list.append(new Recipe("cans"));
+    list.removeIndex(0);
+    list.print();
 
-    cookbook.addRecipe(new Recipe("Corn"));
-    cookbook.addRecipe(new Recipe("pancake"));
-    cookbook.addRecipe(new Recipe("waffle"));
-    cookbook.addRecipe(new Recipe("water"));
-    cookbook.addRecipe(new Recipe("bread"));
-    cookbook.addRecipe(new Recipe("soup"));
-    cookbook.addRecipe(new Recipe("salad"));
-    cookbook.addRecipe(new Recipe("pasta"));
-    cookbook.addRecipe(new Recipe("rice"));
-    cookbook.addRecipe(new Recipe("steak"));
-    cookbook.addRecipe(new Recipe("chicken"));
-    cookbook.addRecipe(new Recipe("fish"));
-    cookbook.addRecipe(new Recipe("burger"));
-    cookbook.addRecipe(new Recipe("pizza"));
-    cookbook.addRecipe(new Recipe("taco"));
-    cookbook.addRecipe(new Recipe("sandwich"));
-    cookbook.addRecipe(new Recipe("omelette"));
-    cookbook.addRecipe(new Recipe("cake"));
-    cookbook.addRecipe(new Recipe("pie"));
-    cookbook.addRecipe(new Recipe("Junebug"));
-    cookbook.addRecipe(new Recipe("Cosmo"));
+}
+
+Cookbook *loadTestRecipies() {
+    Cookbook *cookbook = new Cookbook;
+
+    cookbook->addRecipe(new Recipe("Corn"));
+    cookbook->addRecipe(new Recipe("pancake"));
+    cookbook->addRecipe(new Recipe("waffle"));
+    cookbook->addRecipe(new Recipe("water"));
+    cookbook->addRecipe(new Recipe("bread"));
+    cookbook->addRecipe(new Recipe("soup"));
+    cookbook->addRecipe(new Recipe("salad"));
+    cookbook->addRecipe(new Recipe("pasta"));
+    cookbook->addRecipe(new Recipe("rice"));
+    cookbook->addRecipe(new Recipe("steak"));
+    cookbook->addRecipe(new Recipe("chicken"));
+    cookbook->addRecipe(new Recipe("fish"));
+    cookbook->addRecipe(new Recipe("burger"));
+    cookbook->addRecipe(new Recipe("pizza"));
+    cookbook->addRecipe(new Recipe("taco"));
+    cookbook->addRecipe(new Recipe("sandwich"));
+    cookbook->addRecipe(new Recipe("omelette"));
+    cookbook->addRecipe(new Recipe("cake"));
+    cookbook->addRecipe(new Recipe("pie"));
+    cookbook->addRecipe(new Recipe("Junebug"));
+    cookbook->addRecipe(new Recipe("Cosmo"));
 
     return cookbook;
 }
 
 void menu() {
-    Cookbook testBook = loadTestRecipies();
+    Cookbook *testBook = loadTestRecipies();
     int input = 0;
     while (true) {
         std::cout <<"\nEnter 1 to list the cookbook,\n"
@@ -145,7 +159,7 @@ void menu() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         if (input == 1) {
-            testBook.print();
+            testBook->print();
             std::cout <<"\nPress Enter to return to the menu...";
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
@@ -154,7 +168,7 @@ void menu() {
             std::string recipeInput;
             std::getline(std::cin, recipeInput);
             if (!recipeInput.empty()) {
-                testBook.addRecipe(new Recipe(recipeInput));
+                testBook->addRecipe(new Recipe(recipeInput));
                 std::cout <<"Recipe added.\n";
             } else {
                 std::cout <<"Recipe name cannot be empty.\n";
@@ -164,10 +178,11 @@ void menu() {
             std::cout<<"Enter a character to edit"<<std::endl;
             char input;
             std::cin>>input;
-            testBook.editLetter(input);
+            testBook->editLetter(input);
         }
         else if (input == 4) {
             std::cout <<"Exiting...\n";
+            delete testBook;
             break;
         }
         else {
