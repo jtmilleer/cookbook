@@ -28,9 +28,17 @@ void menuTest();
 
 void menu();
 
+void runMenu(Cookbook *testBook);
+
 int main() {
 
-    menu();
+    //menu();
+
+    Cookbook *testBook = loadTestRecipies();
+
+    runMenu(testBook);
+
+    delete testBook;
 
     return 0;
 }
@@ -197,31 +205,101 @@ void menuTest() {
 }
 
 void menu() {
-    
+    Cookbook *testBook = loadTestRecipies();
+
     initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+
+    scrollok(stdscr, TRUE); //enable scrolling
+
+    int ch = 0;
+    std::string feedback;
+
+    // Print menu at the top once
+    int menuRow = 0;
+    move(menuRow++, 0);
     printw("Welcome to my cookbook!");
-    move(1,0);
+    move(menuRow++, 0);
     printw("1. List Cookbook");
-    move(2,0);
+    move(menuRow++, 0);
     printw("2. Add a Recipe");
-    move(3,0);
+    move(menuRow++, 0);
     printw("3. Edit a Letter");
-    move(4,0);
+    move(menuRow++, 0);
     printw("4. Exit");
     refresh();
 
-    int ch;
-    move(5,0);
-    while ((ch = getch()) != '4') {
-        move(5,0);
+    // Start printing cookbook below the menu
+    int nextRow = menuRow + 1;
+
+    while (ch != '4') {
+        // Print feedback below the last printed cookbook
+        move(nextRow++, 0); // move to next row for feedback
         clrtoeol();
-        if (ch == '1') printw("You pressed 1 to list");
-        else if (ch == '2') printw("You pressed 2 to insert");
-        else if (ch == '3') printw("You pressed 3 to edit");
-        else printw("You pressed something else!");
+        printw("%s", feedback.c_str());
         refresh();
+
+        ch = getch(); // wait for input
+
+        if (ch == '1') {
+            // Print cookbook starting from nextRow
+            testBook->viewCookbookCursor(); // returns row after last line printed
+            //feedback = "Cookbook printed above.";
+        }
+        else if (ch == '2') feedback = "You pressed 2 to insert";
+        else if (ch == '3') feedback = "You pressed 3 to edit";
+        else if (ch != '4') feedback = "You pressed something else!";
     }
 
+    endwin();
+    delete testBook;
+}
+
+void runMenu(Cookbook* testBook) {
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
+
+    int ch = 0;
+    std::string feedback;
+
+    while (ch != '4') {
+        clear(); // always start fresh
+
+        // Print menu
+        int menuRow = 0;
+        mvprintw(menuRow++, 0, "Welcome to my cookbook!");
+        mvprintw(menuRow++, 0, "1. View Cookbook");
+        mvprintw(menuRow++, 0, "2. Add a Recipe");
+        mvprintw(menuRow++, 0, "3. Edit a Letter");
+        mvprintw(menuRow++, 0, "4. Exit");
+
+        // Show feedback (if any) below menu
+        if (!feedback.empty()) {
+            mvprintw(menuRow + 1, 0, "%s", feedback.c_str());
+        }
+
+        refresh();
+
+        ch = getch();
+
+        if (ch == '1') {
+            testBook->viewCookbookCursor(); // waits for ENTER inside
+            feedback = "Cookbook viewed.";
+        }
+        else if (ch == '2') {
+            feedback = "You pressed 2 to insert";
+        }
+        else if (ch == '3') {
+            feedback = "You pressed 3 to edit";
+        }
+        else if (ch != '4') {
+            feedback = "Invalid choice!";
+        }
+    }
 
     endwin();
 }
