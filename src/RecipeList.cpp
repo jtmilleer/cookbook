@@ -1,6 +1,7 @@
 #include "RecipeList.h"
 #include <iostream>
 #include <stdexcept>
+#include <curses.h>
 
 RecipeList::RecipeList() : head(nullptr),tail(nullptr),size(0) {}
 
@@ -25,21 +26,21 @@ void RecipeList::append(const Recipe *input){
     }
 }
 
-    void RecipeList::print() const{
-        const Node *tmp = head;
-        std::cout<<"Head: "<<tmp<<" Data: "<<tmp->data->title<<std::endl;
-        while(tmp != nullptr){
-            //std::cout<<"Printing "<<tmp<<std::endl;
-            if (tmp->next!=nullptr) {
-                //std::cout<<"Hi from list print inside last checker"<<std::endl;
-                std::cout<<tmp->data->title+",";
-            }
-            else {
-                std::cout<<tmp->data->title<<std::endl;
-            }
-            tmp = tmp->next;
+void RecipeList::print() const{
+    const Node *tmp = head;
+    //std::cout<<"Head: "<<tmp<<" Data: "<<tmp->data->title<<std::endl;
+    while(tmp != nullptr){
+        //std::cout<<"Printing "<<tmp<<std::endl;
+        if (tmp->next!=nullptr) {
+            //std::cout<<"Hi from list print inside last checker"<<std::endl;
+            std::cout<<tmp->data->title+",";
         }
+        else {
+            std::cout<<tmp->data->title<<std::endl;
+        }
+        tmp = tmp->next;
     }
+}
 
 void RecipeList::clear() {
     Node *tmp = this->head;
@@ -187,7 +188,6 @@ void RecipeList::removeRecipeStr(const std::string &input) {
 
 }
 
-
 void RecipeList::insert(const Recipe *input, const int &index) {
     if (index < 0 || index > size) {
         throw std::out_of_range("Index out of range");
@@ -232,5 +232,28 @@ void RecipeList::insert(const Recipe *input, const int &index) {
 bool RecipeList::isEmpty() const {
     return this->size == 0;
 }
+
+void RecipeList::printCursor() const {
+    const Node *tmp = this->head;
+    ::clear(); //:: to avoid clash with this->clear();
+    int row = 0;
+    while(tmp != nullptr){
+        if (tmp->next!=nullptr) {
+            //std::cout<<tmp->data->title+",";
+            printw("%s",(tmp->data->title).c_str());
+            printw("%c",',');
+        }
+        else {
+            //std::cout<<tmp->data->title<<std::endl;
+            printw("%s",(tmp->data->title).c_str());
+        }
+        tmp = tmp->next;
+        //move(++row,0);
+
+    }
+
+
+}
+
 
 

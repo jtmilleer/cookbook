@@ -22,7 +22,7 @@ public:
     void removeRecipeStr(const std::string &input);
     void insert(const Recipe *input, const int &index );
     bool isEmpty() const;
-
+    void printCursor() const;
 
 
 
