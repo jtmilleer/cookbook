@@ -291,6 +291,7 @@ void runMenu(Cookbook* testBook) {
             feedback = "Cookbook viewed.";
         }
         else if (ch == '2') {
+            testBook->editLetterCursor();
             feedback = "You pressed 2 to insert";
         }
         else if (ch == '3') {
