@@ -64,7 +64,6 @@ void Cookbook::editLetter(const char &letter) {
 
 }
 
-
 void Cookbook::removeRecipe(const std::string &inputRecipe) {
     const char firstLetter = std::toupper(inputRecipe[0]);
     RecipeList &letterList = cookbook.at(firstLetter);
@@ -140,12 +139,32 @@ void Cookbook::viewCookbookCursor() const {
 void Cookbook::editLetterCursor() {
     clear(); //wipe screen
 
+
+
+
     printw("What letter would you like to edit?");
 
     const int ch = toupper(getch());
 
-    
-    RecipeList *letterList = &this->cookbook.at(ch);
+    printw("%c",ch);
+
+    RecipeList *letterList;
+    try {
+        letterList = &this->cookbook.at(ch);
+        letterList->printCursor();
+    }
+    catch (const std::out_of_range &e){
+        move(1,0);
+        printw("%s","Letter not found in cookbook");
+    }
+    //clear();
+
+    int ch2;
+    while ((ch2 = getch()) != '\n') {
+        // do nothing until enter is pressed
+    }
+    clear();    // wipe cookbook screen
+    refresh();
 
 }
 
