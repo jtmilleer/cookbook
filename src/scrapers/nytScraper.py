@@ -5,50 +5,54 @@ import time
 import os
 import re
 
-# Folder to save recipes
+# ----------------------------
+# CONFIG
+# ----------------------------
 SAVE_DIR = r"C:\Users\jtmil\cookbook\recipes"
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-# Base URL for topic page
-TOPIC_URL = "https://cooking.nytimes.com/topics/easy-recipes"
+COLLECTION_URL = "https://cooking.nytimes.com/68861692-nyt-cooking/126768340-most-popular-recipes-2025-so-far"
 
 HEADERS = {"User-Agent": "Mozilla/5.0"}
+REQUEST_DELAY = 1.5  # polite delay
 
-# Delay between requests (in seconds)
-REQUEST_DELAY = 1.5
-
-# Function to sanitize file names
+# ----------------------------
+# HELPERS
+# ----------------------------
 def sanitize_filename(name):
     return re.sub(r'[^a-zA-Z0-9_\-]', '_', name)
 
-# Function to clean text from control characters
 def clean_text(text):
     return re.sub(r'[\x00-\x1F\x7F-\x9F]', '', text).strip()
 
-# Function to get all recipe URLs from a topic page
-def get_recipe_links(topic_url):
-    recipe_links = set()
-    page = 1
-    while True:
-        url = f"{topic_url}?page={page}"
-        response = requests.get(url, headers=HEADERS)
-        if response.status_code != 200:
-            break
-        soup = BeautifulSoup(response.text, "html.parser")
-        # Each recipe link is inside <a data-testid="card-link" href="...">
-        cards = soup.find_all("a", {"data-testid": "card-link"})
-        if not cards:
-            break  # No more recipes
-        for card in cards:
-            link = card.get("href")
-            if link and link.startswith("/recipes/"):
-                recipe_links.add("https://cooking.nytimes.com" + link)
-        print(f"[INFO] Found {len(cards)} recipes on page {page}")
-        page += 1
-        time.sleep(REQUEST_DELAY)
-    return list(recipe_links)
+# ----------------------------
+# GET RECIPE LINKS FROM COLLECTION PAGE
+# ----------------------------
+def get_recipe_links(collection_url):
+    print(f"[INFO] Fetching collection page: {collection_url}")
+    response = requests.get(collection_url, headers=HEADERS)
+    response.raise_for_status()
+    soup = BeautifulSoup(response.text, "html.parser")
 
-# Function to scrape a single recipe and save as JSON
+    links = []
+    scripts = soup.find_all("script", type="application/ld+json")
+    for script in scripts:
+        try:
+            data = json.loads(script.string)
+            if isinstance(data, dict) and "itemListElement" in data:
+                for item in data["itemListElement"]:
+                    url = item.get("url")
+                    if url and url.startswith("https://cooking.nytimes.com/recipes/"):
+                        links.append(url)
+        except Exception:
+            continue
+
+    print(f"[INFO] Found {len(links)} recipes in collection")
+    return links
+
+# ----------------------------
+# SCRAPE A SINGLE RECIPE
+# ----------------------------
 def scrape_recipe(recipe_url):
     try:
         response = requests.get(recipe_url, headers=HEADERS)
@@ -67,7 +71,13 @@ def scrape_recipe(recipe_url):
 
         title = clean_text(data.get("name", "Unnamed Recipe"))
         ingredients = [clean_text(i) for i in data.get("recipeIngredient", [])]
-        instructions = [clean_text(step.get("text", "")) for step in data.get("recipeInstructions", [])]
+        instructions = []
+        if "recipeInstructions" in data:
+            for step in data["recipeInstructions"]:
+                if isinstance(step, dict):
+                    instructions.append(clean_text(step.get("text", "")))
+                elif isinstance(step, str):
+                    instructions.append(clean_text(step))
 
         recipe_json = {
             "title": title,
@@ -84,10 +94,12 @@ def scrape_recipe(recipe_url):
     except Exception as e:
         print(f"[ERROR] {recipe_url}: {e}")
 
+# ----------------------------
+# MAIN
+# ----------------------------
 def main():
-    print("[INFO] Collecting recipe links...")
-    recipe_urls = get_recipe_links(TOPIC_URL)
-    print(f"[INFO] Total recipes found: {len(recipe_urls)}")
+    recipe_urls = get_recipe_links(COLLECTION_URL)
+    print(f"[INFO] Total recipes to scrape: {len(recipe_urls)}")
 
     for i, url in enumerate(recipe_urls, 1):
         print(f"[INFO] Scraping recipe {i}/{len(recipe_urls)}: {url}")
